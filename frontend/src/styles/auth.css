@@ -63,6 +63,44 @@
   box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  transform: translateY(-50%);
+  color: #a1a1aa;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  color: #f97316;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .auth-form p {
   text-align: center;
   margin-top: 15px;

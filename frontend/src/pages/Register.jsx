@@ -7,6 +7,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -51,20 +53,42 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
+        <div className="password-field">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowPassword((visible) => !visible)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            title={showPassword ? "Hide password" : "Show password"}
+          >
+            <span aria-hidden="true">{showPassword ? "◉" : "◌"}</span>
+          </button>
+        </div>
+        <div className="password-field">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowConfirmPassword((visible) => !visible)}
+            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+            title={showConfirmPassword ? "Hide password" : "Show password"}
+          >
+            <span aria-hidden="true">{showConfirmPassword ? "◉" : "◌"}</span>
+          </button>
+        </div>
         <button type="submit" className="btn">
           Register
         </button>
