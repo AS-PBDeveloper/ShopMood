@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useParams, useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -18,6 +19,10 @@ const EditProduct = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     const fetchProduct = async () => {
       const res = await fetch(`/api/products/${id}`);
       const data = await res.json();
@@ -30,7 +35,7 @@ const EditProduct = () => {
       });
     };
     fetchProduct();
-  }, [id]);
+  }, [id, user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,15 +48,26 @@ const EditProduct = () => {
     data.append("stock", formData.stock);
     if (image) data.append("image", image);
 
-    const res = await fetch(`/api/products/${id}`, {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${user.token}` },
-      body: data,
-    });
-    setLoading(false);
-    if (res.ok) {
-      alert("Product updated successfully!");
-      navigate("/admin/products");
+    try {
+      const res = await apiFetch(`/api/products/${id}`, {
+        method: "PUT",
+        body: data,
+      });
+      if (res.ok) {
+        alert("Product updated successfully!");
+        navigate("/admin/products");
+      } else {
+        const responseData = await res.json();
+        alert(
+          responseData.errors
+            ? responseData.errors.map((e) => e.message).join("\n")
+            : responseData.message || "Error updating product",
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 

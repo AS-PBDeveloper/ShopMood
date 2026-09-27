@@ -13,18 +13,23 @@ const protect = async (req, res, next) => {
         token,
         process.env.ACCESS_TOKEN_SECRET || process.env.JWT_SECRET,
       );
-      req.user = await User.findById(decoded.id).select(
+      const user = await User.findById(decoded.id).select(
         "-password -refreshToken",
       );
+      if (!user) {
+        return res.status(401).json({ message: "Not authorized, user not found" });
+      }
+      req.user = user;
       next();
     } catch (error) {
-      res.status(401).json({ message: "Not authorized, token failed" });
+      return res.status(401).json({ message: "Not authorized, token failed" });
     }
-  }
-
-  if (!token) {
-    res.status(401).json({ message: "Not authorized, no token" });
+  } else {
+    return res.status(401).json({ message: "Not authorized, no token" });
   }
 };
 
-module.exports = { protect };
+// PRD-compliant alias
+const authenticate = protect;
+
+module.exports = { protect, authenticate };

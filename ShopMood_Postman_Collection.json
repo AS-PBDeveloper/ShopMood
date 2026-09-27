@@ -33,7 +33,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\":\"Shivansh\",\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\": \"pass123\"\r\n}",
+              "raw": "{\r\n    \"name\":\"Shivansh\",\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\": \"pass1234\",\r\n    \"confirmPassword\": \"pass1234\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -61,7 +61,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\": \"pass123\"\r\n}",
+              "raw": "{\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\": \"pass1234\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -78,6 +78,57 @@
                 "auth",
                 "login"
               ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/api/auth/refresh-token",
+              "host": ["{{endpoint}}"],
+              "path": ["api", "auth", "refresh-token"]
+            },
+            "description": "Reads httpOnly refreshToken cookie automatically. Returns a new access token."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/api/auth/logout",
+              "host": ["{{endpoint}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Invalidates the refresh token in DB and clears the cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile (Me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/api/auth/me",
+              "host": ["{{endpoint}}"],
+              "path": ["api", "auth", "me"]
             }
           },
           "response": []
@@ -302,8 +353,18 @@
                 },
                 {
                   "type": "text",
+                  "key": "description",
+                  "value": "Updated product description"
+                },
+                {
+                  "type": "text",
                   "key": "price",
                   "value": "149.99"
+                },
+                {
+                  "type": "text",
+                  "key": "category",
+                  "value": "Electronics"
                 },
                 {
                   "type": "text",

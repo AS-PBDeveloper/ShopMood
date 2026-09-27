@@ -10,15 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    if (user && user.token) {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${user.token}` },
-        credentials: "include",
-      });
-    }
-
-    logout();
+    await logout();
     navigate("/login");
   };
 

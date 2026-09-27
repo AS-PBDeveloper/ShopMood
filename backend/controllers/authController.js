@@ -11,7 +11,7 @@ const refreshTokenSecret =
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -24,6 +24,9 @@ const generateRefreshToken = (id) => {
 };
 
 const getRefreshToken = (req) => {
+  // cookie-parser sets req.cookies; fall back to manual parse for compatibility
+  if (req.cookies && req.cookies.refreshToken) return req.cookies.refreshToken;
+
   if (req.body && req.body.refreshToken) return req.body.refreshToken;
 
   const cookieHeader = req.headers.cookie;
@@ -51,21 +54,20 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({ name, email, password: hashedPassword });
     if (user) {
-      // Generate a mock OTP
-      const otp = Math.floor(100000 + Math.random() * 900000);
-
-      // Send Welcome / OTP Email
-      const message = `
-        <h2>Welcome to ShopMood, ${name}!</h2>
-        <p>Thank you for registering on our platform.</p>
-        <p>Your one-time verification/discount OTP is: <strong>${otp}</strong></p>
-      `;
-
-      await sendEmail({
-        email: user.email,
-        subject: "Welcome to ShopMood - Your OTP",
-        message,
-      });
+      // Fire-and-forget: don't block response on email delivery
+      if (process.env.GMAIL_USER) {
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        const message = `
+          <h2>Welcome to ShopMood, ${name}!</h2>
+          <p>Thank you for registering on our platform.</p>
+          <p>Your one-time verification/discount OTP is: <strong>${otp}</strong></p>
+        `;
+        sendEmail({
+          email: user.email,
+          subject: "Welcome to ShopMood - Your OTP",
+          message,
+        }).catch((err) => console.error("Welcome email failed:", err.message));
+      }
 
       res.status(201).json({
         _id: user._id,
@@ -116,11 +118,17 @@ const refreshAccessToken = async (req, res) => {
     if (!refreshToken)
       return res.status(401).json({ message: "Refresh token required" });
 
-    const decoded = jwt.verify(refreshToken, refreshTokenSecret);
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, refreshTokenSecret);
+    } catch {
+      return res.status(401).json({ message: "Invalid or expired refresh token" });
+    }
+
     const user = await User.findById(decoded.id);
 
     if (!user || user.refreshToken !== refreshToken) {
-      return res.status(403).json({ message: "Invalid refresh token" });
+      return res.status(403).json({ message: "Refresh token revoked or invalid" });
     }
 
     res.json({ token: generateAccessToken(user._id) });
@@ -131,13 +139,35 @@ const refreshAccessToken = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (user) {
-      user.refreshToken = undefined;
-      await user.save();
+    // Support logout when access token has expired: fall back to cookie token
+    const refreshToken = getRefreshToken(req);
+    if (refreshToken) {
+      try {
+        const decoded = jwt.decode(refreshToken);
+        if (decoded && decoded.id) {
+          const user = await User.findById(decoded.id);
+          if (user && user.refreshToken === refreshToken) {
+            user.refreshToken = undefined;
+            await user.save();
+          }
+        }
+      } catch (_) {
+        // Best-effort: still clear the cookie
+      }
+    } else if (req.user) {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        user.refreshToken = undefined;
+        await user.save();
+      }
     }
 
-    res.clearCookie("refreshToken", cookieOptions);
+    // Clear the cookie without maxAge so it expires immediately
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
     res.json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -28,8 +28,7 @@ Inside the `backend/` folder, ensure your `.env` looks like this:
 ```env
 PORT=5000
 NODE_ENV=development
-MONGO_URI=mongodb://127.0.0.1:27017/shopmood
-JWT_SECRET=super_secret_key
+MONGODB_URI=mongodb://127.0.0.1:27017/shopmood
 ACCESS_TOKEN_SECRET=super_secret_access_key
 REFRESH_TOKEN_SECRET=super_secret_refresh_key
 RAZORPAY_KEY_ID=your_key_id

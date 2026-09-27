@@ -23,7 +23,9 @@ router.post(
       .normalizeEmail(),
     body("password")
       .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters"),
+      .withMessage("Password must be at least 6 characters")
+      .matches(/\d/)
+      .withMessage("Password must contain at least one number"),
     body("confirmPassword")
       .custom((value, { req }) => value === req.body.password)
       .withMessage("Passwords do not match"),
@@ -45,8 +47,12 @@ router.post(
   loginUser,
 );
 
+// Refresh token: validate that a token exists in body (cookie is read server-side)
 router.post("/refresh-token", refreshAccessToken);
-router.post("/logout", protect, logoutUser);
+
+// Logout: protect is attempted but controller handles both authed and cookie-only paths
+router.post("/logout", logoutUser);
+
 router.get("/me", protect, getMe);
 router.get("/users", protect, admin, getUsers);
 

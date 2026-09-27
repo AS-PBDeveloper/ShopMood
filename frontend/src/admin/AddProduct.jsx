@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 const AddProduct = () => {
   const { user } = useContext(AuthContext);
@@ -16,10 +17,11 @@ const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  if (!user || user.role !== "admin") {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,18 +37,21 @@ const AddProduct = () => {
     data.append("image", image);
 
     try {
-      const res = await fetch("/api/products", {
+      const res = await apiFetch("/api/products", {
         method: "POST",
-        headers: { Authorization: `Bearer ${user.token}` },
         body: data,
       });
       const responseData = await res.json();
 
       if (res.ok) {
-        alert("Product created successfully with Cloudinary Image URL!");
-        navigate("/shop");
+        alert("Product created successfully!");
+        navigate("/admin/products");
       } else {
-        alert(responseData.message || "Error creating product");
+        alert(
+          responseData.errors
+            ? responseData.errors.map((e) => e.message).join("\n")
+            : responseData.message || "Error creating product",
+        );
       }
     } catch (error) {
       console.error(error);

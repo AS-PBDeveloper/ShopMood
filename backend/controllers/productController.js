@@ -1,3 +1,4 @@
+const fs = require("fs");
 const Product = require("../models/Product");
 const cloudinary = require("../config/cloudinary");
 
@@ -26,13 +27,23 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
-    let imageUrl = "";
+    let imageUrl = req.body.imageUrl || "";
+
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path);
-      imageUrl = result.secure_url;
-    } else {
-      return res.status(400).json({ message: "Product image is required" });
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path);
+        imageUrl = result.secure_url;
+      } finally {
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error("Failed to delete temp file:", err.message);
+        });
+      }
     }
+
+    if (!imageUrl) {
+      return res.status(400).json({ message: "Product image is required (upload a file or provide imageUrl)" });
+    }
+
     const product = new Product({
       name,
       description,
@@ -52,22 +63,31 @@ const updateProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
     const product = await Product.findById(req.params.id);
-    if (product) {
-      product.name = name;
-      product.description = description;
-      product.price = price;
-      product.category = category;
-      product.stock = stock;
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-      if (req.file) {
+    if (name !== undefined) product.name = name;
+    if (description !== undefined) product.description = description;
+    if (price !== undefined) product.price = price;
+    if (category !== undefined) product.category = category;
+    if (stock !== undefined) product.stock = stock;
+
+    if (req.file) {
+      try {
         const result = await cloudinary.uploader.upload(req.file.path);
         product.imageUrl = result.secure_url;
+      } finally {
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error("Failed to delete temp file:", err.message);
+        });
       }
-      const updatedProduct = await product.save();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: "Product not found" });
+    } else if (req.body.imageUrl) {
+      product.imageUrl = req.body.imageUrl;
     }
+
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -1,25 +1,30 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 const AdminProducts = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     const fetchProducts = async () => {
       const res = await fetch("/api/products");
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     };
     fetchProducts();
-  }, []);
+  }, [user, navigate]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you strictly sure you want to delete this?")) {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await apiFetch(`/api/products/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${user.token}` },
       });
       if (res.ok) {
         setProducts(products.filter((p) => p._id !== id));
