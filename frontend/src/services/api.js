@@ -1,5 +1,7 @@
 // Centralized API client with automatic access-token refresh on 401
-const BASE = "";
+// In production: REACT_APP_API_URL = https://your-app.onrender.com
+// In local dev: empty string — proxy in package.json forwards to localhost:5000
+const BASE = process.env.REACT_APP_API_URL || "";
 
 let isRefreshing = false;
 let failedQueue = [];

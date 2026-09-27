@@ -9,7 +9,6 @@ connectDB();
 
 const app = express();
 
-// CORS — allow localhost in dev, Vercel URL in production
 const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
@@ -36,10 +35,8 @@ app.get("/", (req, res) => {
   res.send("ShopMood API is running...");
 });
 
-// Export for Vercel serverless — do NOT call app.listen() in production
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
+// Always listen — works for both Render and local dev
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;
