@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import { apiFetch } from "../services/api";
 import "../styles/product.css";
 
 const categories = [
@@ -83,7 +84,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await apiFetch("/api/products");
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
       } catch (error) {

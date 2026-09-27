@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import { apiFetch } from "../services/api";
 import "../styles/product.css";
 
 const Shop = () => {
@@ -31,7 +32,7 @@ const Shop = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await apiFetch("/api/products");
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
       } catch (error) {

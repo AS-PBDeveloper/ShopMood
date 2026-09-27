@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import { useWishlist } from "../context/WishlistContext";
+import { apiFetch } from "../services/api";
 import "../styles/product.css";
 
 const ProductDetail = () => {
@@ -21,7 +22,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${id}`);
+        const res = await apiFetch(`/api/products/${id}`);
         const data = await res.json();
         setProduct(data);
       } catch (error) {

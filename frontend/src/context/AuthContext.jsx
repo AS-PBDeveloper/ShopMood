@@ -17,9 +17,8 @@ export const AuthProvider = ({ children }) => {
     async ({ callApi = true } = {}) => {
       if (callApi) {
         try {
-          await fetch("/api/auth/logout", {
+          await apiFetch("/api/auth/logout", {
             method: "POST",
-            credentials: "include",
           });
         } catch (_) {
           // Best-effort — still clear local state

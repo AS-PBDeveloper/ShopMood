@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { apiFetch } from "../services/api";
 import "../styles/auth.css";
 
 const Login = () => {
@@ -19,10 +20,9 @@ const Login = () => {
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await apiFetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();

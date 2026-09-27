@@ -17,7 +17,7 @@ const AdminProducts = () => {
     }
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await apiFetch("/api/products");
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
       } catch (err) {

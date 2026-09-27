@@ -28,7 +28,7 @@ const EditProduct = () => {
     }
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${id}`);
+        const res = await apiFetch(`/api/products/${id}`);
         const data = await res.json();
         setFormData({
           name: data.name || "",

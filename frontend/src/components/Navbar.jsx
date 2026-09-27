@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useSelector } from "react-redux";
+import { apiFetch } from "../services/api";
 import "../styles/navbar.css";
 
 const Navbar = () => {
@@ -30,7 +31,7 @@ const Navbar = () => {
     const timer = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const res = await fetch(
+        const res = await apiFetch(
           `/api/products?keyword=${encodeURIComponent(searchTerm.trim())}`,
         );
         const data = await res.json();
