@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { apiFetch } from "../services/api";
 
 const EditProduct = () => {
@@ -14,9 +14,12 @@ const EditProduct = () => {
     price: "",
     category: "",
     stock: "",
+    imageUrl: "",
   });
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
     if (!user) {
@@ -24,18 +27,33 @@ const EditProduct = () => {
       return;
     }
     const fetchProduct = async () => {
-      const res = await fetch(`/api/products/${id}`);
-      const data = await res.json();
-      setFormData({
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        category: data.category,
-        stock: data.stock,
-      });
+      try {
+        const res = await fetch(`/api/products/${id}`);
+        const data = await res.json();
+        setFormData({
+          name: data.name || "",
+          description: data.description || "",
+          price: data.price || "",
+          category: data.category || "Electronics",
+          stock: data.stock || "",
+          imageUrl: data.imageUrl || "",
+        });
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFetching(false);
+      }
     };
     fetchProduct();
   }, [id, user, navigate]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +72,7 @@ const EditProduct = () => {
         body: data,
       });
       if (res.ok) {
-        alert("Product updated successfully!");
+        alert("✓ Product updated successfully!");
         navigate("/admin/products");
       } else {
         const responseData = await res.json();
@@ -66,110 +84,149 @@ const EditProduct = () => {
       }
     } catch (error) {
       console.error(error);
+      alert("Network error updating product.");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "40px auto",
-        background: "#18181b",
-        padding: "40px",
-        borderRadius: "12px",
-        border: "1px solid rgba(255,255,255,0.05)",
-      }}
-    >
-      <h2 style={{ color: "#f97316", marginBottom: "20px" }}>Edit Product</h2>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-      >
-        <input
-          type="text"
-          placeholder="Product Name"
-          required
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          style={inputStyle}
-        />
-        <textarea
-          placeholder="Description"
-          required
-          rows="4"
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          style={inputStyle}
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          required
-          value={formData.price}
-          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-          style={inputStyle}
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          required
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({ ...formData, category: e.target.value })
-          }
-          style={inputStyle}
-        />
-        <input
-          type="number"
-          placeholder="Stock"
-          required
-          value={formData.stock}
-          onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-          style={inputStyle}
-        />
-        <div
-          style={{
-            padding: "15px",
-            border: "1px dashed #f97316",
-            borderRadius: "8px",
-          }}
-        >
-          <label
-            style={{ display: "block", marginBottom: "10px", color: "#a1a1aa" }}
-          >
-            Replace Image (Optional)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-            style={{ color: "#fff" }}
-          />
+  if (fetching) {
+    return (
+      <div className="stitch-page-container">
+        <div className="stitch-empty-state">
+          <p>Loading product details...</p>
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn"
-          style={{ marginTop: "10px" }}
-        >
-          {loading ? "Updating..." : "Update Product"}
-        </button>
-      </form>
+      </div>
+    );
+  }
+
+  const currentDisplayImg = imagePreview || formData.imageUrl;
+
+  return (
+    <div className="stitch-page-container" style={{ maxWidth: "780px" }}>
+      <div className="stitch-header-bar">
+        <div>
+          <span className="stitch-badge orange">INVENTORY EDITOR</span>
+          <h1 className="stitch-title">Edit Product</h1>
+          <p className="stitch-subtitle">
+            Update pricing, descriptions, categories, or replace media
+          </p>
+        </div>
+        <Link to="/admin/products" className="stitch-btn-secondary">
+          ← Cancel &amp; Back
+        </Link>
+      </div>
+
+      <div className="stitch-card">
+        <form onSubmit={handleSubmit}>
+          <div className="stitch-form-group">
+            <label className="stitch-label">Product Name / Title</label>
+            <input
+              type="text"
+              required
+              className="stitch-input"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+          </div>
+
+          <div className="form-inline-row">
+            <div className="stitch-form-group flex-1">
+              <label className="stitch-label">Category</label>
+              <select
+                className="stitch-select"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              >
+                <option value="Electronics">Electronics</option>
+                <option value="Footwear">Footwear</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Clothing">Clothing</option>
+              </select>
+            </div>
+
+            <div className="stitch-form-group flex-1">
+              <label className="stitch-label">Price (INR ₹)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                required
+                className="stitch-input"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              />
+            </div>
+
+            <div className="stitch-form-group flex-1">
+              <label className="stitch-label">Stock Units</label>
+              <input
+                type="number"
+                min="0"
+                required
+                className="stitch-input"
+                value={formData.stock}
+                onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="stitch-form-group">
+            <label className="stitch-label">Description</label>
+            <textarea
+              rows="5"
+              required
+              className="stitch-textarea"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            />
+          </div>
+
+          {/* Media Replacement */}
+          <div className="stitch-form-group">
+            <label className="stitch-label">Product Image</label>
+            <div className="image-upload-zone">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                id="edit-file-input"
+                style={{ display: "none" }}
+              />
+              <label htmlFor="edit-file-input" className="image-upload-label">
+                {currentDisplayImg ? (
+                  <div className="image-preview-wrapper">
+                    <img src={currentDisplayImg} alt="Preview" className="uploaded-preview-img" />
+                    <span className="change-img-text">Click to Choose Replacement Image</span>
+                  </div>
+                ) : (
+                  <div className="upload-placeholder">
+                    <span className="upload-icon">📷</span>
+                    <strong>Click to Choose Replacement Image</strong>
+                  </div>
+                )}
+              </label>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "24px" }}>
+            <Link to="/admin/products" className="stitch-btn-secondary">
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              disabled={loading}
+              className="stitch-btn-primary"
+              style={{ minWidth: "160px" }}
+            >
+              {loading ? "Saving Changes..." : "Save Product Updates →"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
-const inputStyle = {
-  padding: "12px",
-  background: "#09090b",
-  border: "1px solid #27272a",
-  borderRadius: "6px",
-  color: "#fff",
-  fontSize: "15px",
-  outline: "none",
-};
 export default EditProduct;

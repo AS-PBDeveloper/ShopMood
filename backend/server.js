@@ -24,6 +24,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/images", express.static(path.join(__dirname, "../frontend/public/images")));
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));

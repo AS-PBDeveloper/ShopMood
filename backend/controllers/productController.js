@@ -4,7 +4,23 @@ const cloudinary = require("../config/cloudinary");
 
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const { keyword, category, search } = req.query;
+    const searchTerm = keyword || search;
+    const query = {};
+
+    if (searchTerm) {
+      query.$or = [
+        { name: { $regex: searchTerm, $options: "i" } },
+        { description: { $regex: searchTerm, $options: "i" } },
+        { category: { $regex: searchTerm, $options: "i" } },
+      ];
+    }
+
+    if (category && category !== "All") {
+      query.category = { $regex: new RegExp(`^${category}$`, "i") };
+    }
+
+    const products = await Product.find(query);
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -25,6 +25,7 @@ const importData = async () => {
     });
 
     const products = [
+      // Original Catalog Products
       {
         name: "Wireless Noise-Cancelling Headphones",
         description:
@@ -72,6 +73,74 @@ const importData = async () => {
           "https://images.unsplash.com/photo-1542291026-7eec264c27ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
         ratings: 4.5,
         numReviews: 89,
+      },
+
+      // Newly Generated Products with Dedicated Assets
+      {
+        name: "Horizon Pro Smartwatch",
+        description:
+          "Next-gen AMOLED touchscreen with sapphire crystal glass, 24/7 heart rate and SpO2 tracking, GPS, and premium hand-stitched leather strap.",
+        price: 249.99,
+        category: "Electronics",
+        stock: 25,
+        imageUrl: "/images/products/smartwatch.jpg",
+        ratings: 4.9,
+        numReviews: 48,
+      },
+      {
+        name: "KeyCraft Custom Mechanical Keyboard",
+        description:
+          "Wireless 75% mechanical keyboard featuring hot-swappable tactile switches, vintage two-tone PBT keycaps, per-key RGB backlighting, and acoustic silicone damping.",
+        price: 159.0,
+        category: "Electronics",
+        stock: 18,
+        imageUrl: "/images/products/keyboard.jpg",
+        ratings: 4.8,
+        numReviews: 36,
+      },
+      {
+        name: "Heritage Artisan Leather Backpack",
+        description:
+          "Handcrafted full-grain saddle leather travel and tech rucksack with antique brass buckles, weather-resistant finish, and padded 16-inch laptop compartment.",
+        price: 189.5,
+        category: "Accessories",
+        stock: 12,
+        imageUrl: "/images/products/backpack.jpg",
+        ratings: 4.7,
+        numReviews: 29,
+      },
+      {
+        name: "Aura Sound ANC Wireless Earbuds",
+        description:
+          "Audiophile-tuned true wireless earbuds with hybrid active noise cancellation, custom graphene drivers, ambient awareness mode, and 36-hour charging case.",
+        price: 129.99,
+        category: "Electronics",
+        stock: 40,
+        imageUrl: "/images/products/earbuds.jpg",
+        ratings: 4.6,
+        numReviews: 62,
+      },
+      {
+        name: "StudioMaster Wireless ANC Headphones",
+        description:
+          "Over-ear studio monitor headphones with 45mm dynamic neodymium drivers, multi-device Bluetooth 5.3 pairing, memory foam ear cushions, and 50h battery.",
+        price: 299.0,
+        category: "Electronics",
+        stock: 15,
+        imageUrl: "/images/products/headphones.jpg",
+        ratings: 4.9,
+        numReviews: 54,
+      },
+      {
+        name: "Aurora Velocity Running Sneakers",
+        description:
+          "Ultra-responsive performance running shoes engineered with high-rebound nitrogen-infused foam midsoles and breathable lightweight engineered knit mesh.",
+        price: 119.99,
+        category: "Footwear",
+        stock: 35,
+        imageUrl: "/images/products/sneakers.jpg",
+        ratings: 4.7,
+        numReviews: 41,
       },
     ];
 

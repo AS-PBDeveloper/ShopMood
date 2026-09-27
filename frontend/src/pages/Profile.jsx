@@ -37,173 +37,146 @@ const Profile = () => {
     navigate("/login");
   };
 
-  const containerStyle = {
-    maxWidth: "1000px",
-    margin: "40px auto",
-    padding: "30px",
-    background: "#18181b",
-    borderRadius: "12px",
-    border: "1px solid rgba(255,255,255,0.05)",
-    color: "#fafafa",
-  };
-  const badgeStyle = {
-    background: "rgba(249,115,22,0.1)",
-    color: "#f97316",
-    padding: "6px 12px",
-    borderRadius: "8px",
-    fontSize: "0.9rem",
-    fontWeight: "bold",
-    display: "inline-block",
-  };
-
   if (!user) return null;
 
+  const totalSpent = orders.reduce((acc, o) => acc + (o.totalAmount || 0), 0);
+
   return (
-    <div style={containerStyle}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
-          paddingBottom: "30px",
-          marginBottom: "30px",
-        }}
-      >
-        <div>
-          <h2
-            style={{ color: "#fff", fontSize: "2.2rem", marginBottom: "10px" }}
-          >
-            My Profile
-          </h2>
-          <p
-            style={{
-              color: "#a1a1aa",
-              fontSize: "1.2rem",
-              marginBottom: "5px",
-            }}
-          >
-            <strong>Name:</strong> {user.name}
-          </p>
-          <p
-            style={{
-              color: "#a1a1aa",
-              fontSize: "1.2rem",
-              marginBottom: "15px",
-            }}
-          >
-            <strong>Email:</strong> {user.email}
-          </p>
-          <span style={badgeStyle}>
-            Account Type: {user.role.toUpperCase()}
-          </span>
+    <div className="stitch-page-container">
+      {/* 1. Profile Header Hero Card */}
+      <div className="stitch-card profile-hero-card">
+        <div className="profile-hero-left">
+          <div className="profile-large-avatar">
+            {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+          </div>
+
+          <div className="profile-details-text">
+            <div className="profile-name-row">
+              <h1 className="profile-name">{user.name}</h1>
+              <span className={`stitch-badge ${user.role === "admin" ? "orange" : "blue"}`}>
+                {user.role ? user.role.toUpperCase() : "CUSTOMER"}
+              </span>
+            </div>
+            <p className="profile-email">📧 {user.email}</p>
+
+            <div className="profile-stats-chips">
+              <span className="profile-stat-chip">
+                <strong>{orders.length}</strong> Total Orders
+              </span>
+              <span className="profile-stat-chip">
+                <strong>₹{totalSpent.toFixed(2)}</strong> Total Value
+              </span>
+              {user.role === "admin" && (
+                <Link to="/admin" className="profile-stat-chip admin-chip">
+                  ⚙️ Open Admin Control Panel →
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="btn"
-          style={{ background: "#ef4444", boxShadow: "none" }}
-        >
-          Logout
-        </button>
+
+        <div className="profile-hero-actions">
+          <button onClick={handleLogout} className="stitch-btn-danger">
+            Sign Out
+          </button>
+        </div>
       </div>
 
-      <h3
-        style={{ color: "#f97316", marginBottom: "20px", fontSize: "1.5rem" }}
-      >
-        Order History
-      </h3>
-      {loading ? (
-        <p style={{ color: "#a1a1aa" }}>Fetching your orders...</p>
-      ) : orders.length === 0 ? (
-        <div
-          style={{
-            background: "#09090b",
-            padding: "30px",
-            borderRadius: "8px",
-            textAlign: "center",
-            border: "1px solid #27272a",
-          }}
-        >
-          <p style={{ color: "#a1a1aa", marginBottom: "15px" }}>
-            You haven't placed any orders yet.
-          </p>
-          <Link to="/shop" className="btn">
-            Start Shopping
+      {/* 2. Order History Section */}
+      <div className="profile-orders-section" style={{ marginTop: "40px" }}>
+        <div className="stitch-header-bar">
+          <div>
+            <span className="stitch-badge orange">ACTIVITY</span>
+            <h2 className="stitch-title" style={{ fontSize: "1.8rem" }}>
+              My Orders &amp; Receipts
+            </h2>
+            <p className="stitch-subtitle">
+              Track recent package statuses, tracking identifiers, and transaction records
+            </p>
+          </div>
+          <Link to="/shop" className="stitch-btn-secondary">
+            + Continue Shopping
           </Link>
         </div>
-      ) : (
-        <div style={{ display: "grid", gap: "20px" }}>
-          {orders.map((order) => (
-            <div
-              key={order._id}
-              style={{
-                background: "#09090b",
-                padding: "20px",
-                borderRadius: "12px",
-                border: "1px solid #27272a",
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "20px",
-              }}
-            >
-              <div>
-                <p
-                  style={{
-                    color: "#a1a1aa",
-                    fontSize: "0.9rem",
-                    marginBottom: "5px",
-                  }}
-                >
-                  Order ID: <span style={{ color: "#fff" }}>{order._id}</span>
-                </p>
-                <p
-                  style={{
-                    color: "#a1a1aa",
-                    fontSize: "0.9rem",
-                    marginBottom: "5px",
-                  }}
-                >
-                  Placed On:{" "}
-                  <span style={{ color: "#fff" }}>
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </span>
-                </p>
-                <p style={{ color: "#a1a1aa", fontSize: "0.9rem" }}>
-                  Total:{" "}
-                  <strong style={{ color: "#10b981" }}>
-                    ₹{order.totalAmount.toFixed(2)}
-                  </strong>
-                </p>
+
+        {loading ? (
+          <div className="stitch-empty-state">
+            <p>Fetching your order records...</p>
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="stitch-empty-state">
+            <span className="stitch-empty-icon">📦</span>
+            <h3 className="stitch-empty-title">No Orders Placed Yet</h3>
+            <p className="stitch-empty-text">
+              You haven't made any purchases with this account. Explore our curated collections and place your first order.
+            </p>
+            <Link to="/shop" className="stitch-btn-primary">
+              Explore Storefront →
+            </Link>
+          </div>
+        ) : (
+          <div className="profile-orders-list">
+            {orders.map((order) => (
+              <div key={order._id} className="stitch-card profile-order-card">
+                <div className="order-card-header">
+                  <div className="order-id-block">
+                    <span className="order-label">ORDER ID</span>
+                    <span className="order-code">#{order._id.substring(0, 10).toUpperCase()}</span>
+                  </div>
+
+                  <div className="order-meta-group">
+                    <div className="order-meta-item">
+                      <span className="order-label">PLACED ON</span>
+                      <span className="order-val">
+                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+
+                    <div className="order-meta-item">
+                      <span className="order-label">TOTAL AMOUNT</span>
+                      <span className="order-val order-price">
+                        ₹{Number(order.totalAmount).toFixed(2)}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`order-status-pill ${
+                        order.status === "Delivered"
+                          ? "status-delivered"
+                          : order.status === "Shipped"
+                          ? "status-shipped"
+                          : "status-pending"
+                      }`}
+                    >
+                      ● {order.status || "Processing"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Items preview */}
+                {order.items && order.items.length > 0 && (
+                  <div className="order-items-strip">
+                    {order.items.map((it, idx) => (
+                      <div key={idx} className="order-item-chip">
+                        {it.imageUrl && (
+                          <img src={it.imageUrl} alt={it.name} className="order-item-img" />
+                        )}
+                        <span className="order-item-title">
+                          {it.name} <strong>x{it.qty || 1}</strong>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div>
-                <span
-                  style={{
-                    background:
-                      order.status === "Delivered"
-                        ? "rgba(16,185,129,0.1)"
-                        : order.status === "Shipped"
-                          ? "rgba(59,130,246,0.1)"
-                          : "rgba(245,158,11,0.1)",
-                    color:
-                      order.status === "Delivered"
-                        ? "#10b981"
-                        : order.status === "Shipped"
-                          ? "#3b82f6"
-                          : "#f59e0b",
-                    padding: "8px 16px",
-                    borderRadius: "20px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {order.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,73 +1,66 @@
 import React from "react";
-
-const textualStyle = {
-  maxWidth: "900px",
-  margin: "0 auto",
-  padding: "40px",
-  background: "#18181b",
-  borderRadius: "16px",
-  border: "1px solid rgba(255, 255, 255, 0.05)",
-  lineHeight: "1.8",
-  color: "#a1a1aa",
-};
+import { Link } from "react-router-dom";
 
 const Disclaimer = () => {
   return (
-    <div style={textualStyle}>
-      <h2
-        style={{
-          color: "#fff",
-          marginBottom: "20px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
-          paddingBottom: "15px",
-        }}
-      >
-        Legal & Site Disclaimer
-      </h2>
+    <div className="stitch-page-container" style={{ maxWidth: "900px" }}>
+      <div className="stitch-card policy-card">
+        <span className="stitch-badge orange" style={{ marginBottom: "14px" }}>
+          LEGAL &amp; COMPLIANCE
+        </span>
+        <h1 className="stitch-title" style={{ fontSize: "2.4rem", marginBottom: "14px" }}>
+          Legal &amp; Platform Disclaimer
+        </h1>
+        <p className="stitch-subtitle" style={{ fontSize: "1rem", lineHeight: "1.7", marginBottom: "32px" }}>
+          This document details terms regarding demonstrative functionality, sandbox environments, and educational architectural parameters across the ShopMood platform.
+        </p>
 
-      <p style={{ marginBottom: "20px" }}>
-        The data, interfaces, and graphical components represented across the
-        ShopMood domain strictly act uniquely as an educational development
-        platform. This codebase models rigorous application structures and
-        architectures for purely demonstrative, portfolio-oriented engineering
-        usage.
-      </p>
+        <div className="policy-section-block">
+          <div className="policy-icon-row">
+            <span className="policy-icon">🎓</span>
+            <div>
+              <h3>1. Demonstrative &amp; Portfolio Purpose</h3>
+              <p>
+                The data matrices, visual interfaces, and transactional pipelines represented across the ShopMood domain serve as a high-fidelity demonstration of robust MERN-stack software engineering, REST APIs, and responsive frontends.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <h4 style={{ color: "#f97316", marginTop: "25px", marginBottom: "10px" }}>
-        1. Accuracy of Materials
-      </h4>
-      <p style={{ marginBottom: "15px" }}>
-        The materials spanning the ShopMood interface may heavily include
-        dynamic technical, typographical, or dummy photographic elements.
-        Product matrices mapped in the DB pipeline do absolutely not correlate
-        to strictly real physical outputs and are safely populated via generic
-        Unsplash imagery protocols.
-      </p>
+        <div className="policy-section-block">
+          <div className="policy-icon-row">
+            <span className="policy-icon">🔒</span>
+            <div>
+              <h3>2. Sandboxed Payment Integrations</h3>
+              <p>
+                All financial interfaces and checkout flows connect strictly to test/sandbox environments (such as Razorpay sandbox keys or local test bypasses). No real monetary charges or actual financial debits are executed.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <h4 style={{ color: "#f97316", marginTop: "25px", marginBottom: "10px" }}>
-        2. Payment Processing Restrictions
-      </h4>
-      <p style={{ marginBottom: "15px" }}>
-        No authentic financial variables are handled natively within this
-        environment. All payment endpoints forcefully bind exclusively to
-        external testing-based networks (Sandbox Razorpay environments). No
-        exact deductibles exist.
-      </p>
+        <div className="policy-section-block">
+          <div className="policy-icon-row">
+            <span className="policy-icon">📸</span>
+            <div>
+              <h3>3. Creative Assets &amp; Photography</h3>
+              <p>
+                Product photography and banners utilized throughout this application are generated via advanced AI creative tools or open commercial visual assets for realistic interface representation.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <h4 style={{ color: "#f97316", marginTop: "25px", marginBottom: "10px" }}>
-        3. External Binding Links
-      </h4>
-      <p style={{ marginBottom: "15px" }}>
-        ShopMood operates completely independent domains and takes strictly zero
-        absolute parameter responsibility over the specific contents or
-        behaviors populated via external routing anchors generated implicitly by
-        third-party configurations.
-      </p>
-
-      <p style={{ marginTop: "30px", fontStyle: "italic", fontSize: "0.9rem" }}>
-        By interacting natively within this codebase, you unconditionally signal
-        acceptance bounded by these parameters efficiently.
-      </p>
+        <div className="policy-footer-support">
+          <div>
+            <h4>Questions or Feedback?</h4>
+            <p>Connect with our engineering team for technical inquiries.</p>
+          </div>
+          <Link to="/about" className="stitch-btn-secondary">
+            About the Creator →
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
