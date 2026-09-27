@@ -3,28 +3,28 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
-const path = require("path");
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// Set CORS for frontend URL / allow single-node deploy
+// CORS — allow localhost in dev, Vercel URL in production
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-      process.env.FRONTEND_URL,
-    ],
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/images", express.static(path.join(__dirname, "../frontend/public/images")));
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
@@ -32,18 +32,14 @@ app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/payment", require("./routes/paymentRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
 
-// Serve frontend in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
+app.get("/", (req, res) => {
+  res.send("ShopMood API is running...");
+});
 
-  app.use((req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("ShopMood API is running in Development mode...");
-  });
+// Export for Vercel serverless — do NOT call app.listen() in production
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
