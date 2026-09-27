@@ -37,7 +37,7 @@ const categories = [
     name: "Fashion & Apparel",
     icon: "👕",
     subtitle: "Essentials & Daily Staples",
-    image: "/images/products/headphones.jpg",
+    image: "/images/products/hoodie.jpg",
   },
 ];
 

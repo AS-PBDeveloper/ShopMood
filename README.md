@@ -158,7 +158,11 @@ shopmood/
     │           ├── backpack.jpg
     │           ├── earbuds.jpg
     │           ├── headphones.jpg
-    │           └── sneakers.jpg
+    │           ├── sneakers.jpg
+    │           ├── hoodie.jpg
+    │           ├── overcoat.jpg
+    │           ├── jeans.jpg
+    │           └── linen-shirt.jpg
     │
     └── src/
         ├── App.jsx                       # Top-level route switch (18 pages)
@@ -532,17 +536,21 @@ Running `npm run seed` resets and populates MongoDB with:
 * **Password:** `password123`
 * **Role:** `admin` (Has full access to `/admin` dashboard, orders, and user directory)
 
-### Active Catalog (10 Products)
-1. **Horizon Pro Smartwatch** (Electronics) — ₹249.99
-2. **KeyCraft Custom Mechanical Keyboard** (Electronics) — ₹159.00
-3. **Heritage Artisan Leather Backpack** (Accessories) — ₹189.50
-4. **Aura Sound ANC Wireless Earbuds** (Electronics) — ₹129.99
-5. **StudioMaster Wireless ANC Headphones** (Electronics) — ₹299.00
-6. **Aurora Velocity Running Sneakers** (Footwear) — ₹119.99
-7. **Wireless Noise-Cancelling Headphones** (Electronics) — ₹299.99
-8. **Minimalist Modern Chair** (Furniture) — ₹150.00
-9. **Professional DSLR Camera** (Electronics) — ₹1,199.99
-10. **Classic White Sneakers** (Clothing) — ₹85.00
+### Active Catalog (14 Products)
+1. **AeroForm Heavyweight Oversized Hoodie** (Clothing) — ₹89.99
+2. **Belgrave Tailored Wool Trench Overcoat** (Clothing) — ₹229.00
+3. **Kuroki 14oz Japanese Selvedge Denim** (Clothing) — ₹145.00
+4. **Riviera Relaxed Linen Resort Shirt** (Clothing) — ₹68.50
+5. **Horizon Pro Smartwatch** (Electronics) — ₹249.99
+6. **KeyCraft Custom Mechanical Keyboard** (Electronics) — ₹159.00
+7. **Heritage Artisan Leather Backpack** (Accessories) — ₹189.50
+8. **Aura Sound ANC Wireless Earbuds** (Electronics) — ₹129.99
+9. **StudioMaster Wireless ANC Headphones** (Electronics) — ₹299.00
+10. **Aurora Velocity Running Sneakers** (Footwear) — ₹119.99
+11. **Wireless Noise-Cancelling Headphones** (Electronics) — ₹299.99
+12. **Minimalist Modern Chair** (Furniture) — ₹150.00
+13. **Professional DSLR Camera** (Electronics) — ₹1,199.99
+14. **Classic White Sneakers** (Footwear) — ₹85.00
 
 ---
 

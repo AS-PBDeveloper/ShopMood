@@ -142,6 +142,52 @@ const importData = async () => {
         ratings: 4.7,
         numReviews: 41,
       },
+
+      // AI-Generated Premium Apparel & Clothing Collection
+      {
+        name: "AeroForm Heavyweight Oversized Hoodie",
+        description:
+          "Engineered from 480 GSM organic French terry cotton with a dropped-shoulder relaxed streetwear drape, double-layered hood without drawstrings, and ribbed micro-stretch cuffs for ultimate daily warmth.",
+        price: 89.99,
+        category: "Clothing",
+        stock: 45,
+        imageUrl: "/images/products/hoodie.jpg",
+        ratings: 4.8,
+        numReviews: 38,
+      },
+      {
+        name: "Belgrave Tailored Wool Trench Overcoat",
+        description:
+          "Masterfully tailored from an insulating 70/30 Italian wool-cashmere blend. Features structured notched lapels, a cinching waist tie-belt, tonal horn buttons, and deep storm-flap pockets for refined cold-weather layering.",
+        price: 229.0,
+        category: "Clothing",
+        stock: 20,
+        imageUrl: "/images/products/overcoat.jpg",
+        ratings: 4.9,
+        numReviews: 52,
+      },
+      {
+        name: "Kuroki 14oz Japanese Selvedge Denim",
+        description:
+          "Crafted from raw vintage shuttle-loom selvedge denim woven in Okayama. Features distinctive redline selvedge ID, custom copper hardware, button fly, and a contemporary slim-tapered silhouette that ages uniquely with wear.",
+        price: 145.0,
+        category: "Clothing",
+        stock: 30,
+        imageUrl: "/images/products/jeans.jpg",
+        ratings: 4.7,
+        numReviews: 44,
+      },
+      {
+        name: "Riviera Relaxed Linen Resort Shirt",
+        description:
+          "Woven from 100% Normandy flax linen with garment-dyed softness and natural breathability. Designed with a retro camp collar, mother-of-pearl buttons, and side-slit hem for relaxed coastal leisure.",
+        price: 68.5,
+        category: "Clothing",
+        stock: 50,
+        imageUrl: "/images/products/linen-shirt.jpg",
+        ratings: 4.6,
+        numReviews: 29,
+      },
     ];
 
     await Product.insertMany(products);
