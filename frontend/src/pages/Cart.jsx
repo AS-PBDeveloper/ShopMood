@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import { removeFromCart, addToCart } from "../redux/cartSlice";
 import "../styles/cart.css";
 
 const Cart = () => {
+  const { user } = useContext(AuthContext);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,6 +25,17 @@ const Cart = () => {
     (acc, item) => acc + item.price * item.qty,
     0,
   );
+
+  if (!user) {
+    return (
+      <div className="cart-container">
+        <h2>Shopping Cart</h2>
+        <p>
+          Please <Link to="/login">log in</Link> to view your cart.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="cart-container">

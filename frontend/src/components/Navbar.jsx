@@ -45,7 +45,7 @@ const Navbar = () => {
           <Link to="/shop">Shop</Link>
         </li>
         <li>
-          <Link to="/cart">Cart ({cartItems.length})</Link>
+          <Link to="/cart">Cart ({user ? cartItems.length : 0})</Link>
         </li>
         {user ? (
           <>
